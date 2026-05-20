@@ -6,20 +6,18 @@ public class XRRaycastGun : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform muzzle;
-    [SerializeField] private GameObject impactEffectPrefab;
+    [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private AudioSource fireAudio;
 
-    [Header("Raycast")]
-    [SerializeField] private float range = 50f;
-    [SerializeField] private LayerMask hitMask = ~0;
+    [Header("Bullet")]
+    [SerializeField] private string bulletTag = "Bullet";
+    [SerializeField] private float spawnForwardOffset = 0.1f;
+    [SerializeField] private float debugLineLength = 3f;
 
     [Header("Fire Control")]
     [SerializeField] private float fireInterval = 0.2f;
     [SerializeField] private bool holdToFire;
-
-    [Header("Impact Effect")]
-    [SerializeField] private float impactEffectLifetime = 2f;
 
     [Header("Debug")]
     [SerializeField] private bool drawDebugRay = true;
@@ -43,29 +41,32 @@ public class XRRaycastGun : MonoBehaviour
 
     private void Update()
     {
-        if (!rightHandDevice.isValid && !TryAcquireRightHandDevice())
+        bool isTriggerPressed = false;
+        bool hasXrInput = false;
+
+        if (rightHandDevice.isValid || TryAcquireRightHandDevice())
         {
-            return;
+            hasXrInput = rightHandDevice.TryGetFeatureValue(
+                CommonUsages.triggerButton,
+                out isTriggerPressed);
         }
 
-        if (!rightHandDevice.TryGetFeatureValue(CommonUsages.triggerButton, out bool isTriggerPressed))
-        {
-            return;
-        }
+        bool isMousePressed = Input.GetMouseButton(0);
+        bool isFirePressed = isMousePressed || (hasXrInput && isTriggerPressed);
 
         if (holdToFire)
         {
-            if (isTriggerPressed && Time.time >= nextFireTime)
+            if (isFirePressed && Time.time >= nextFireTime)
             {
                 Fire();
             }
         }
-        else if (isTriggerPressed && !wasTriggerPressed && Time.time >= nextFireTime)
+        else if (isFirePressed && !wasTriggerPressed && Time.time >= nextFireTime)
         {
             Fire();
         }
 
-        wasTriggerPressed = isTriggerPressed;
+        wasTriggerPressed = isFirePressed;
     }
 
     private bool TryAcquireRightHandDevice()
@@ -98,12 +99,18 @@ public class XRRaycastGun : MonoBehaviour
             return;
         }
 
+        if (bulletPrefab == null)
+        {
+            Debug.LogWarning("XRRaycastGun requires a bullet prefab reference.", this);
+            return;
+        }
+
         warnedAboutMissingMuzzle = false;
         nextFireTime = Time.time + fireInterval;
 
         if (drawDebugRay)
         {
-            Debug.DrawRay(muzzle.position, muzzle.forward * range, Color.red, 1f);
+            Debug.DrawRay(muzzle.position, muzzle.forward * debugLineLength, Color.red, 1f);
         }
 
         if (muzzleFlash != null)
@@ -116,31 +123,25 @@ public class XRRaycastGun : MonoBehaviour
             fireAudio.PlayOneShot(fireAudio.clip);
         }
 
-        if (!Physics.Raycast(
-                muzzle.position,
-                muzzle.forward,
-                out RaycastHit hit,
-                range,
-                hitMask,
-                QueryTriggerInteraction.Ignore))
+        Vector3 spawnPosition = muzzle.position + (muzzle.forward * spawnForwardOffset);
+        GameObject spawnedBullet = Instantiate(
+            bulletPrefab,
+            spawnPosition,
+            Quaternion.LookRotation(muzzle.forward));
+
+        if (!string.IsNullOrEmpty(bulletTag))
         {
+            spawnedBullet.tag = bulletTag;
+        }
+
+        BulletController_cr bulletController = spawnedBullet.GetComponent<BulletController_cr>();
+        if (bulletController == null)
+        {
+            Debug.LogWarning("XRRaycastGun bullet prefab needs a BulletController_cr component.", spawnedBullet);
+            Destroy(spawnedBullet);
             return;
         }
 
-        if (impactEffectPrefab == null)
-        {
-            return;
-        }
-
-        Quaternion impactRotation = hit.normal.sqrMagnitude > 0f
-            ? Quaternion.LookRotation(hit.normal)
-            : Quaternion.LookRotation(-muzzle.forward);
-
-        GameObject spawnedEffect = Instantiate(impactEffectPrefab, hit.point, impactRotation);
-
-        if (impactEffectLifetime > 0f)
-        {
-            Destroy(spawnedEffect, impactEffectLifetime);
-        }
+        bulletController.Shoot(muzzle.forward);
     }
 }
