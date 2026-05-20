@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class ZombieAI : MonoBehaviour {
@@ -115,8 +116,7 @@ public class ZombieAI : MonoBehaviour {
     }
 
     void UpdateAttack(float dist) {
-
-        // 플레이어 방향으로 부드럽게 회전
+        // 플레이어 방향으로 회전
         Vector3 dir = (player.position - transform.position).normalized;
         dir.y = 0f;
         if (dir != Vector3.zero)
@@ -126,7 +126,6 @@ public class ZombieAI : MonoBehaviour {
         if (Time.time - lastAttackTime >= attackCooldown) {
             lastAttackTime = Time.time;
             animator.SetTrigger(HashAttack);
-            Debug.Log("공격");
 
             PlayerHealth ph = player.GetComponent<PlayerHealth>();
             if (ph != null) ph.TakeDamage(attackDamage);
@@ -134,7 +133,6 @@ public class ZombieAI : MonoBehaviour {
 
         if (dist > attackRange * 1.2f)
             ChangeState(ZombieState.Chase);
-
     }
 
     // ───────────── 피격 / 사망 ─────────────
@@ -159,8 +157,9 @@ public class ZombieAI : MonoBehaviour {
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
 
-        Destroy(gameObject, 5f);
+        Destroy(gameObject, 3f);
     }
+
 
     // ───────────── 유틸 ─────────────
 

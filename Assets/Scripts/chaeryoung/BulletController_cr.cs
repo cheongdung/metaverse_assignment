@@ -41,14 +41,6 @@ public class BulletController_cr : MonoBehaviour {
         _fired = true;
     }
 
-    // 충돌 시 Destroy (Rigidbody 있을 때)
-    private void OnCollisionEnter(Collision collision) {
-        // 필요하면 여기서 데미지 처리
-        // collision.gameObject.GetComponent<Health>()?.TakeDamage(damage);
-
-        Destroy(gameObject);
-    }
-
     // 트리거 콜라이더와 충돌 시 Destroy
     private void OnTriggerEnter(Collider other) {
         Destroy(gameObject);
