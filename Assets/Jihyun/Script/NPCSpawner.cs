@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class NPCSpawner : MonoBehaviour
 {
@@ -32,9 +32,8 @@ public class NPCSpawner : MonoBehaviour
         Vector3 position = new Vector3(
             transform.position.x + randomX,
             transform.position.y,
-            transform.position.z + randomZ
+            transform.position.z + randomZ + 5
         );
-
         if (useTerrainHeight && Terrain.activeTerrain != null)
         {
             position.y = Terrain.activeTerrain.SampleHeight(position)
