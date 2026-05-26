@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour {
     [Header("체력 설정")]
     public float maxHealth = 100f;
-    private float currentHealth;
+    public static float currentHealth;
 
     [Header("UI (선택)")]
     public Slider healthSlider;   // 인스펙터에서 연결 (없어도 됨)

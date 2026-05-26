@@ -1,4 +1,4 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 public class NPCDeath : MonoBehaviour
 {
@@ -28,7 +28,7 @@ public class NPCDeath : MonoBehaviour
 
         isDead = true;
 
-        Debug.Log(gameObject.name + " ªÁ∏¡");
+        Debug.Log(gameObject.name + " ÏÇ¨Îßù");
 
         if (bullet != null)
         {

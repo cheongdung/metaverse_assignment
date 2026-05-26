@@ -7,15 +7,19 @@ public class NPCSpawner : MonoBehaviour
     public int minCount = 10;
     public int maxCount = 20;
 
+    public int count;
+
     public float spawnRangeX = 10f;
     public float spawnRangeZ = 10f;
 
     public bool useTerrainHeight = true;
     public float yOffset = 0f;
 
-    void Start()
+    void Awake()
     {
-        int count = Random.Range(minCount, maxCount + 1);
+        count = Random.Range(minCount, maxCount + 1);
+
+        ZombieAI.deathCount = 0;
 
         for (int i = 0; i < count; i++)
         {

@@ -41,6 +41,8 @@ public class ZombieAI : MonoBehaviour {
     private static readonly int HashDead = Animator.StringToHash("isDead");
     private static readonly int HashGrounded = Animator.StringToHash("isGrounded");
 
+    public static int deathCount = 0;
+
     void Start() {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
@@ -156,6 +158,9 @@ public class ZombieAI : MonoBehaviour {
 
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
+
+        deathCount++;
+        Debug.Log(deathCount);
 
         Destroy(gameObject, 3f);
     }
