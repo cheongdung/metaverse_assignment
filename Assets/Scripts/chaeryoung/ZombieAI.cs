@@ -77,7 +77,7 @@ public class ZombieAI : MonoBehaviour {
     void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.CompareTag(bulletTag)) {
             TakeDamage(bulletDamage);
-            Destroy(collision.gameObject); // 총알 제거
+            Destroy(collision.gameObject); // 총알 제거D
         }
     }
 
