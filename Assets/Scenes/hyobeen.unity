@@ -364,8 +364,7 @@ Transform:
   m_LocalPosition: {x: 0.25, y: 1.2, z: 0.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1144675229}
+  m_Children: []
   m_Father: {fileID: 1329792417}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &900470860
@@ -616,14 +615,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144675228}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.25, y: 0.0824008, z: 0.3999939}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1746450248}
   - {fileID: 1146710036}
-  m_Father: {fileID: 900470859}
+  m_Father: {fileID: 1399675928}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1144675230
 MonoBehaviour:
@@ -641,9 +640,11 @@ MonoBehaviour:
   bulletPrefab: {fileID: 1549013090757956494, guid: c7d67d340dcb3f644b7d0b89c42182ec, type: 3}
   muzzleFlash: {fileID: 0}
   fireAudio: {fileID: 1144675231}
+  aimCamera: {fileID: 1399675932}
   bulletTag: Bullet
   spawnForwardOffset: 0.1
   debugLineLength: 3
+  aimDistance: 100
   fireInterval: 0.2
   holdToFire: 0
   drawDebugRay: 1
@@ -769,7 +770,7 @@ Transform:
   m_GameObject: {fileID: 1146710035}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.74, y: 0, z: 2.3}
+  m_LocalPosition: {x: 0, y: -0.46, z: 1.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -999,7 +1000,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1144675229}
   m_Father: {fileID: 480606518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1399675929
@@ -1236,15 +1238,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6239359517610320279, guid: 67f716418f7ba2146a845739c7782755, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6239359517610320279, guid: 67f716418f7ba2146a845739c7782755, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.1
+      value: -0.55
       objectReference: {fileID: 0}
     - target: {fileID: 6239359517610320279, guid: 67f716418f7ba2146a845739c7782755, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 6239359517610320279, guid: 67f716418f7ba2146a845739c7782755, type: 3}
       propertyPath: m_LocalRotation.w
