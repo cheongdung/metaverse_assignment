@@ -9,11 +9,13 @@ public class XRRaycastGun : MonoBehaviour
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private AudioSource fireAudio;
+    [SerializeField] private Camera aimCamera;
 
     [Header("Bullet")]
     [SerializeField] private string bulletTag = "Bullet";
     [SerializeField] private float spawnForwardOffset = 0.1f;
     [SerializeField] private float debugLineLength = 3f;
+    [SerializeField] private float aimDistance = 100f;
 
     [Header("Fire Control")]
     [SerializeField] private float fireInterval = 0.2f;
@@ -108,9 +110,11 @@ public class XRRaycastGun : MonoBehaviour
         warnedAboutMissingMuzzle = false;
         nextFireTime = Time.time + fireInterval;
 
+        Vector3 shootDirection = GetShootDirection();
+
         if (drawDebugRay)
         {
-            Debug.DrawRay(muzzle.position, muzzle.forward * debugLineLength, Color.red, 1f);
+            Debug.DrawRay(muzzle.position, shootDirection * debugLineLength, Color.red, 1f);
         }
 
         if (muzzleFlash != null)
@@ -123,11 +127,11 @@ public class XRRaycastGun : MonoBehaviour
             fireAudio.PlayOneShot(fireAudio.clip);
         }
 
-        Vector3 spawnPosition = muzzle.position + (muzzle.forward * spawnForwardOffset);
+        Vector3 spawnPosition = muzzle.position + (shootDirection * spawnForwardOffset);
         GameObject spawnedBullet = Instantiate(
             bulletPrefab,
             spawnPosition,
-            Quaternion.LookRotation(muzzle.forward));
+            Quaternion.LookRotation(shootDirection));
 
         if (!string.IsNullOrEmpty(bulletTag))
         {
@@ -142,6 +146,25 @@ public class XRRaycastGun : MonoBehaviour
             return;
         }
 
-        bulletController.Shoot(muzzle.forward);
+        bulletController.Shoot(shootDirection);
+    }
+
+    private Vector3 GetShootDirection()
+    {
+        Camera activeCamera = aimCamera != null ? aimCamera : Camera.main;
+        if (activeCamera == null)
+        {
+            return muzzle.forward;
+        }
+
+        Ray centerRay = activeCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        Vector3 targetPoint = centerRay.origin + (centerRay.direction * aimDistance);
+
+        if (Physics.Raycast(centerRay, out RaycastHit hit, aimDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+        {
+            targetPoint = hit.point;
+        }
+
+        return (targetPoint - muzzle.position).normalized;
     }
 }
